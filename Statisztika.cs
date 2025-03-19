@@ -11,6 +11,8 @@ namespace Motors
     {
         List<Motor> motors = new List<Motor>();
 
+        internal List<Motor> Motors { get => motors; }
+
         public void ReadFromFile(string fileName)
         {
             StreamReader sr = new StreamReader(fileName);
@@ -20,7 +22,10 @@ namespace Motors
             {
                 string line = sr.ReadLine();
                 string[] tagok = line.Split(";");
-                motors.Add(new Motor(tagok[0], tagok[1], int.Parse(tagok[2]), double.Parse(tagok[3]), double.Parse(tagok[4])));
+
+                
+
+                motors.Add(new Motor(tagok[0], tagok[1], int.Parse(tagok[2]), double.Parse(tagok[3], CultureInfo.InvariantCulture), double.Parse(tagok[4], CultureInfo.InvariantCulture)));
             }
         }
 
@@ -58,19 +63,23 @@ namespace Motors
 
         public int SumBasedOnBrand(string brandName)
         {
-            List<Motor> tempMotorok = motors;
+            List<Motor> szurtMotorok = new List<Motor>();
             
             for (int i = 0; i < motors.Count; i++)
             {
-                if (!(motors[i].Brand.Equals(brandName)))
+                if (motors[i].Brand.Equals(brandName))
                 {
-                    motors.RemoveAt(i);
+                    szurtMotorok.Add(motors[i]);
                 }
             }
-            int osszeg = SumPrices();
 
-            motors = tempMotorok;
-            return SumPrices();
+            List<Motor> tempMotors = motors;
+            motors= szurtMotorok;
+            int osszeg = SumPrices();
+            motors = tempMotors;
+
+            
+            return osszeg;
         }
 
         public void Sort()
